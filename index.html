@@ -1,7 +1,4 @@
-<html>
-        <head><title>Brew Knowledge</title></head>
-        <body>
-            <pre style="white-space: pre-wrap; word-wrap: break-word;"><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -9,35 +6,40 @@
   <title>Brew Knowledge</title>
 
   <style>
+    /* 1. MINECRAFT FONT IMPORT */
     @font-face {
-      font-family: 'MyPixelFont';
+      font-family: 'MinecraftFont';
       src: url('minecraft_font.ttf') format('truetype');
     }
 
-    /* Reset */
+    /* Reset & Tap Outline Removal */
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent; /* Removes blue highlight on tap */
+      outline: none;
     }
 
     body {
-      font-family: 'MyPixelFont', 'Press Start 2P', monospace, sans-serif;
+      font-family: 'MinecraftFont', monospace, sans-serif;
       min-height: 100vh;
       width: 100%;
       display: flex;
       justify-content: center;
       align-items: flex-start;
 
+      /* Fixed Background Grid Pattern */
       background-image: url('bg.png');
-      background-size: cover;
-      background-position: center top;
-      background-repeat: repeat-y;
+      background-size: auto; /* Keeps background aspect ratio perfect */
+      background-position: top center;
+      background-repeat: repeat;
       background-attachment: fixed;
       overflow-x: hidden;
       overflow-y: auto;
     }
 
+    /* Main Container */
     .app-container {
       position: relative;
       width: 100%;
@@ -51,6 +53,7 @@
       gap: 30px;
     }
 
+    /* Header Banner */
     .header {
       margin-top: 10px;
       text-align: center;
@@ -62,7 +65,6 @@
       border: none;
       cursor: pointer;
       transition: transform 0.2s ease;
-      outline: none;
       width: 100%;
     }
 
@@ -80,8 +82,10 @@
       height: auto;
       display: block;
       margin: 0 auto;
+      image-rendering: pixelated; /* Keeps pixel art crisp */
     }
 
+    /* Navigation Buttons */
     .button-group {
       display: flex;
       flex-direction: column;
@@ -93,15 +97,15 @@
     .custom-btn {
       position: relative;
       width: 240px;
-      min-height: 70px;
-      border: 3px solid #6d4c41;
-      border-radius: 12px;
+      height: 70px;
+      border: none;
+      background: none;
       cursor: pointer;
       
       background-image: url('button.png'); 
       background-size: 100% 100%;
       background-repeat: no-repeat;
-      background-color: #fff8e1;
+      image-rendering: pixelated; /* Prevents blurry pixel art */
 
       display: flex;
       justify-content: center;
@@ -121,11 +125,12 @@
       font-size: 0.95rem;
       color: #2b1a0e;
       text-align: center;
-      font-family: inherit;
+      font-family: 'MinecraftFont', monospace, sans-serif;
     }
 
+    /* Spinning Disk (Bottom Right) */
     .disk-container {
-      position: fixed; /* Fixed position so it stays pinned at bottom right */
+      position: fixed;
       bottom: 20px;
       right: 20px;
       z-index: 50;
@@ -135,7 +140,6 @@
       background: none;
       border: none;
       cursor: pointer;
-      outline: none;
       border-radius: 50%;
       width: 90px;
       height: 90px;
@@ -150,8 +154,10 @@
       border-radius: 50%;
       display: block;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      image-rendering: pixelated;
     }
 
+    /* Only rotates when .spinning class is added */
     .spinning .disk-img {
       animation: spin 6s linear infinite;
     }
@@ -161,6 +167,7 @@
       to { transform: rotate(360deg); }
     }
 
+    /* Reusable Pop-up UI Modal */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -190,6 +197,7 @@
       color: #fff8e1;
       position: relative;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      font-family: 'MinecraftFont', monospace, sans-serif;
     }
 
     .close-btn {
@@ -227,43 +235,49 @@
 </head>
 <body>
 
+  <!-- Audio File -->
   <audio id="bg-audio" src="bgm.mp3" loop></audio>
 
+  <!-- Main Container -->
   <main class="app-container">
     
+    <!-- Top Header Banner -->
     <header class="header">
       <button class="title-btn" id="brew-knowledge-btn" aria-label="Brew Knowledge Info">
         <img src="brew-knowledge.png" alt="Brew Knowledge" class="title-img" />
       </button>
     </header>
 
+    <!-- Navigation Buttons -->
     <nav class="button-group">
-      <button class="custom-btn" onclick="handleButtonClick('Order Up!')">
+      <button class="custom-btn" id="order-btn">
         <span class="btn-text">Order up!</span>
       </button>
 
-      <button class="custom-btn" onclick="handleButtonClick('Menu')">
+      <button class="custom-btn" id="menu-btn">
         <span class="btn-text">Menu</span>
       </button>
 
-      <button class="custom-btn" onclick="handleButtonClick('About')">
+      <button class="custom-btn" id="about-btn">
         <span class="btn-text">About</span>
       </button>
     </nav>
 
+    <!-- Disk Player (Starts un-spinning) -->
     <div class="disk-container">
-      <button id="disk-btn" class="disk-btn spinning" aria-label="Toggle Audio">
+      <button id="disk-btn" class="disk-btn" aria-label="Toggle Audio">
         <img src="disk.png" alt="Music Disk" class="disk-img" />
       </button>
     </div>
 
   </main>
 
-  <div id="cafe-modal" class="modal-overlay">
+  <!-- Pop-up UI Modal -->
+  <div id="ui-modal" class="modal-overlay">
     <div class="modal-content">
       <button class="close-btn" id="close-modal">&times;</button>
-      <h2 class="modal-title">Welcome to Brew knowledge! Where we value your grades.</h2>
-      <div class="cafe-image-container">
+      <h2 class="modal-title" id="modal-text">Welcome!</h2>
+      <div class="cafe-image-container" id="modal-img-box" style="display: none;">
         <img src="cafe.png" alt="Cafe Inside" class="cafe-img" />
       </div>
     </div>
@@ -274,12 +288,17 @@
       const audio = document.getElementById('bg-audio');
       const diskBtn = document.getElementById('disk-btn');
       const brewBtn = document.getElementById('brew-knowledge-btn');
-      const modal = document.getElementById('cafe-modal');
+      const orderBtn = document.getElementById('order-btn');
+      const menuBtn = document.getElementById('menu-btn');
+      
+      const modal = document.getElementById('ui-modal');
+      const modalText = document.getElementById('modal-text');
+      const modalImgBox = document.getElementById('modal-img-box');
       const closeModalBtn = document.getElementById('close-modal');
 
       let isPlaying = false;
 
-      // Start music on first tap anywhere
+      // Start audio on first user tap
       const startAudioOnInteraction = () => {
         if (!isPlaying) {
           audio.play().then(() => {
@@ -294,7 +313,7 @@
       document.addEventListener('click', startAudioOnInteraction);
       document.addEventListener('touchstart', startAudioOnInteraction);
 
-      // Disk button click handler
+      // Toggle music & spinning animation
       diskBtn.addEventListener('click', (event) => {
         event.stopPropagation();
         
@@ -309,12 +328,33 @@
         }
       });
 
-      // Show modal
-      brewBtn.addEventListener('click', () => {
+      // Helper function to open modal popup
+      function openModal(text, showImage = false) {
+        modalText.innerText = text;
+        if (showImage) {
+          modalImgBox.style.display = 'block';
+        } else {
+          modalImgBox.style.display = 'none';
+        }
         modal.classList.add('active');
+      }
+
+      // Title Button -> Welcome message with Cafe image
+      brewBtn.addEventListener('click', () => {
+        openModal("Welcome to Brew knowledge! Where we value your grades.", true);
       });
 
-      // Close modal
+      // Order Up! Button -> Custom Message
+      orderBtn.addEventListener('click', () => {
+        openModal("Still brewing... Please wait!", false);
+      });
+
+      // Menu Button -> Custom Message
+      menuBtn.addEventListener('click', () => {
+        openModal("Grabbing ingredients... Please wait!", false);
+      });
+
+      // Close modal controls
       closeModalBtn.addEventListener('click', () => {
         modal.classList.remove('active');
       });
@@ -325,12 +365,6 @@
         }
       });
     });
-
-    function handleButtonClick(buttonName) {
-      alert(`Clicked: ${buttonName}`);
-    }
   </script>
 </body>
-</html></pre>
-        </body>
-    </html>
+</html>
